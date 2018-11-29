@@ -1,0 +1,10 @@
+name: MoneyDeposit
+version: 1.0.0
+author: Gober
+main: com.gmail.JyckoSianjaya.MoneyDeposit.MoneyDeposit
+description: Deposit money in papers.
+dependencies: [Vault]
+commands:
+   moneydeposit:
+       usage: /<command>
+       aliases: [deposit, mdeposit, md]

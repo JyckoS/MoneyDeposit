@@ -1,0 +1,45 @@
+minimumDeposit: 100
+maximumDeposit: 100000
+
+normal_deposit:
+   picture: "https://i.imgur.com/M2sYS6T.png"
+   amount:
+      starting_x: 56
+      starting_y: 42
+   sender:
+      starting_x: 40
+      starting_y: 84
+
+specific_deposit:
+   picture: "https://i.imgur.com/300KGfw.png"
+   amount:
+      starting_x: 56
+      starting_y: 42
+   sender:
+      starting_x: 40
+      starting_y: 84
+   receiver:
+      starting_x: 24
+      starting_y: 106
+
+item_look:
+   name: "&a&lMoney Paper"
+   lores:
+   - "&7Contains: &a$%m"
+   - "&7From: &f%o"
+
+item_look_specific:
+   name: "&6(Private) &a&lMoney Paper"
+   lores:
+   - "&7Contains: &a$%m"
+   - "&7From: &f%o"
+   - "&7For: &f%p"
+
+depositMessage:
+- "&8[&a&l ! &8] &7Your money has been successfully deposited."
+- "&c- $%m"
+depositMessageSpecific:
+- "&8[&a&l ! &8] &7Your money has been successfully deposited for %p."
+- "&c- $%m"
+withdrawMessage:
+- "&a&lMoney Withdrawn. &7You got &a$%m &7from %o"
