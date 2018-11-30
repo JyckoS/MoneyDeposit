@@ -1,6 +1,10 @@
 minimumDeposit: 100
 maximumDeposit: 100000
 
+font:
+   width: 4
+   height: 4
+   
 normal_deposit:
    picture: "https://i.imgur.com/M2sYS6T.png"
    amount:
@@ -8,7 +12,7 @@ normal_deposit:
       starting_y: 42
    sender:
       starting_x: 40
-      starting_y: 84
+      starting_y: 77
 
 specific_deposit:
    picture: "https://i.imgur.com/300KGfw.png"
@@ -17,10 +21,10 @@ specific_deposit:
       starting_y: 42
    sender:
       starting_x: 40
-      starting_y: 84
+      starting_y: 77
    receiver:
       starting_x: 24
-      starting_y: 106
+      starting_y: 111
 
 item_look:
    name: "&a&lMoney Paper"

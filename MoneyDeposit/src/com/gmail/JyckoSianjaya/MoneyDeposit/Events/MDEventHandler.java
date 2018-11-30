@@ -35,7 +35,7 @@ public final class MDEventHandler {
 		Economy econ = MoneyDeposit.getEconomy();
 		if (hastarget) {
 			String pname = p.getName();
-			if (owner != pname && target != pname) {
+			if (!owner.equalsIgnoreCase(pname) && !target.equalsIgnoreCase(pname)) {
 				Utility.sendMsg(p, "&cThat's not yours!");
 				return;
 			}

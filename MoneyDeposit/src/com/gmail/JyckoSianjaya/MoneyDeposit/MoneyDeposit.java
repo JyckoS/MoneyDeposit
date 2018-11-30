@@ -7,6 +7,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.gmail.JyckoSianjaya.MoneyDeposit.Commands.MDCommand;
 import com.gmail.JyckoSianjaya.MoneyDeposit.Events.MDEventHandler;
 import com.gmail.JyckoSianjaya.MoneyDeposit.Events.MDEventListener;
+import com.gmail.JyckoSianjaya.MoneyDeposit.Images.ImageRunnable;
 import com.gmail.JyckoSianjaya.MoneyDeposit.Storage.MDChecker;
 import com.gmail.JyckoSianjaya.MoneyDeposit.Storage.MDStorage;
 import com.gmail.JyckoSianjaya.Utilities.ActionBarAPI;
@@ -21,6 +22,7 @@ public final class MoneyDeposit extends JavaPlugin {
 	private MDEventHandler handler;
 	private ActionBarAPI api;
 	private MDChecker mc;
+	private ImageRunnable rbb;
 	private static Boolean isVault;
 	private static Economy econ;
 	/*
@@ -90,5 +92,6 @@ public final class MoneyDeposit extends JavaPlugin {
 		api = ActionBarAPI.getInstance();
 		mc = MDChecker.getInstance();
 		handler = MDEventHandler.getInstance();
+		rbb = ImageRunnable.getInstance();
 	}
 }

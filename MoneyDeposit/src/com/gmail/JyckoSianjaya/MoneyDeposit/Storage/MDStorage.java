@@ -18,6 +18,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.MapMeta;
 import org.bukkit.map.MapCanvas;
+import org.bukkit.map.MapFont;
+import org.bukkit.map.MapFont.CharacterSprite;
 import org.bukkit.map.MapPalette;
 import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
@@ -27,6 +29,8 @@ import org.bukkit.map.MinecraftFont;
 import com.gmail.JyckoSianjaya.MoneyDeposit.MoneyDeposit;
 import com.gmail.JyckoSianjaya.MoneyDeposit.Images.ImageData;
 import com.gmail.JyckoSianjaya.MoneyDeposit.Images.ImageDataValue;
+import com.gmail.JyckoSianjaya.MoneyDeposit.Images.ImageRunnable;
+import com.gmail.JyckoSianjaya.MoneyDeposit.Images.ImageTask;
 import com.gmail.JyckoSianjaya.Utilities.Utility;
 import com.gmail.JyckoSianjaya.Utilities.XMaterial;
 import com.gmail.JyckoSianjaya.Utilities.NBT.NBTItem;
@@ -43,7 +47,11 @@ public final class MDStorage {
 	private int MinimumDeposit = 0;
 	private int MaximumDeposit = 0;
 	private MDStorage() {
+		FileConfiguration config = MoneyDeposit.getInstance().getConfig();
+		config.options().copyDefaults(true);
+		MoneyDeposit.getInstance().saveConfig();
 		loadConfig();
+		
 	}
 	public final List<String> getMessage(final Message me) {
 		return messages.get(me);
@@ -126,8 +134,42 @@ public final class MDStorage {
 		});
 		mapmm.setMapId(specificview.getId());
 		depositspecific.setItemMeta(mapmm);
-		depositdata = new ImageData(templatedeposit, MinecraftFont.Font, new ImageDataValue(config.getInt("normal_deposit.amount.starting_x"), config.getInt("normal_deposit.amount.starting_y")), new ImageDataValue(config.getInt("normal_deposit.sender.starting_x"), config.getInt("normal_deposit.sender.starting_y")));
-		specificdepositdata = new ImageData(templatespecificdeposit, MinecraftFont.Font, new ImageDataValue(config.getInt("specific_deposit.amount.starting_x"), config.getInt("specific_deposit.amount.starting_y")), new ImageDataValue(config.getInt("specific_deposit.sender.starting_x"), config.getInt("specific_deposit.sender.starting_y")), new ImageDataValue(config.getInt("specific_deposit.receiver.starting_x"), config.getInt("specific_deposit.receiver.starting_y")));
+		int width = config.getInt("font.width");
+		int height = config.getInt("font.height");
+		int total = width * height;
+		Boolean[] bool = new Boolean[total];
+		for (int i = 0; i < total; i++) {
+			bool[i] = false;
+		}
+		MinecraftFont font = MinecraftFont.Font;
+		MapFont fonts = new MapFont();
+/*		CharacterSprite sprite = null;
+		try {
+		sprite = new CharacterSprite(width, height, new boolean[]{false, false, false});
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		}
+		try {
+		sprite = new CharacterSprite(width, height, new boolean[]{false,false, false, false});
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		}
+		try {
+		sprite = new CharacterSprite(width, height, new boolean[]{false});
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		}
+		char[] car = new char[] {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r','s','t','u','v','w','x','y','z'};
+		for (char c : car) {
+			font.setChar(c, sprite);
+		}
+		char[] cap = new char[] {'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'};
+		for (char c : cap) {
+			font.setChar(c, sprite);
+		}
+		*/
+		depositdata = new ImageData(templatedeposit, font, new ImageDataValue(config.getInt("normal_deposit.amount.starting_x"), config.getInt("normal_deposit.amount.starting_y")), new ImageDataValue(config.getInt("normal_deposit.sender.starting_x"), config.getInt("normal_deposit.sender.starting_y")));
+		specificdepositdata = new ImageData(templatespecificdeposit, font, new ImageDataValue(config.getInt("specific_deposit.amount.starting_x"), config.getInt("specific_deposit.amount.starting_y")), new ImageDataValue(config.getInt("specific_deposit.sender.starting_x"), config.getInt("specific_deposit.sender.starting_y")), new ImageDataValue(config.getInt("specific_deposit.receiver.starting_x"), config.getInt("specific_deposit.receiver.starting_y")));
 		
 	}
 	public BufferedImage getTemplateDepositImage() { return templatedeposit; }
@@ -161,6 +203,10 @@ public final class MDStorage {
 				// TODO Auto-generated method stub
 				if (written) return;
 				written = true;
+				ImageRunnable.getInstance().addTask(new ImageTask() {
+					int duration = 1;
+					@Override
+					public void runTask() {
 				ImageData specificdata = specificdepositdata;
 				MinecraftFont font = specificdata.getFont();
 				ImageDataValue amountvalue = specificdata.getAmountImageDataValue();
@@ -170,6 +216,26 @@ public final class MDStorage {
 				arg1.drawText(amountvalue.getX(), amountvalue.getY(), font, "" + amount);
 				arg1.drawText(ownervalue.getX(), ownervalue.getY(), font, owner.getName());
 				arg1.drawText(targetvalue.getX(), targetvalue.getY(), font, target);
+					}
+
+					@Override
+					public void reduceTicks() {
+						// TODO Auto-generated method stub
+						duration--;
+					}
+
+					@Override
+					public void reduceTicks(int toreduce) {
+						// TODO Auto-generated method stub
+						duration-=toreduce;
+					}
+
+					@Override
+					public int getTicks() {
+						// TODO Auto-generated method stub
+						return duration;
+					}
+				});
 			}
 		});
 		MapMeta metdd = (MapMeta) clon.getItemMeta();
@@ -179,6 +245,7 @@ public final class MDStorage {
 		nb.setString("MDOwner", owner.getName());
 		nb.setInteger("MDDeposit", amount);
 		nb.setString("MDTarget", target);
+		nb.setShort("map", view.getId());
 		return nb.getItem();
 }
 	public ItemStack getDepositItem(Player owner, int amount) {
@@ -206,6 +273,11 @@ public final class MDStorage {
 				// TODO Auto-generated method stub
 				if (written) return;
 				written = true;
+				ImageRunnable.getInstance().addTask(new ImageTask() {
+
+					int duration = 1;
+					@Override
+					public void runTask() {
 				ImageData specificdata = depositdata;
 				MinecraftFont font = specificdata.getFont();
 				ImageDataValue amountvalue = specificdata.getAmountImageDataValue();
@@ -213,6 +285,26 @@ public final class MDStorage {
 				arg1.drawImage(0, 0, templatedeposit);
 				arg1.drawText(amountvalue.getX(), amountvalue.getY(), font, "" + amount);
 				arg1.drawText(ownervalue.getX(), ownervalue.getY(), font, owner.getName());
+					}
+
+					@Override
+					public void reduceTicks() {
+						// TODO Auto-generated method stub
+						duration--;
+					}
+
+					@Override
+					public void reduceTicks(int toreduce) {
+						// TODO Auto-generated method stub
+						duration = duration-toreduce;
+					}
+
+					@Override
+					public int getTicks() {
+						// TODO Auto-generated method stub
+						return duration;
+					}
+				}); 
 			}
 		});
 		MapMeta metdd = (MapMeta) clon.getItemMeta();
@@ -221,6 +313,7 @@ public final class MDStorage {
 		NBTItem nbt = new NBTItem(clon);
 		nbt.setString("MDOwner", owner.getName());
 		nbt.setInteger("MDDeposit", amount);
+		nbt.setShort("map", view.getId());
 		return nbt.getItem();
 	}
 	public enum Message {

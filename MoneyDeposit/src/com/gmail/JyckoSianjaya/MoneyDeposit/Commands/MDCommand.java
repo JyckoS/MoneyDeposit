@@ -51,6 +51,7 @@ public class MDCommand implements	TabExecutor {
 			if (!snd.hasPermission("moneydeposit.admin")) return;
 			MoneyDeposit.getInstance().reloadConfig();
 			MDStorage.getInstance().loadConfig();
+			Utility.sendMsg(snd, "&c<> &7Config reloaded succesfully!");
 			return;
 		case "help":
 		default:
